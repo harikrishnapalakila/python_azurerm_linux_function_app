@@ -176,7 +176,7 @@ resource "azurerm_linux_function_app" "processor" {
   }
 
   # VNet integration for private resource access
-  virtual_network_subnet_id = var.integration_subnet_id
+  #virtual_network_subnet_id = var.integration_subnet_id
 
   identity {
     type = "SystemAssigned"
@@ -188,11 +188,11 @@ resource "azurerm_linux_function_app" "processor" {
   }
 }
 
-variable "integration_subnet_id" {
-  description = "Subnet ID for VNet integration"
-  type        = string
-  default     = ""
-}
+#variable "integration_subnet_id" {
+#  description = "Subnet ID for VNet integration"
+#  type        = string
+#  default     = ""
+#}
 
 
 ##########
