@@ -28,7 +28,7 @@ resource "azurerm_resource_group" "python-linux-functionapp" {
 }
 
 resource "azurerm_storage_account" "pythonsa" {
-  name                     = "linuxfunctionappsa"
+  name                     = "linuxfunctionappsapython"
   resource_group_name      = azurerm_resource_group.python-linux-functionapp.name
   location                 = azurerm_resource_group.python-linux-functionapp.location
   account_tier             = "Standard"
