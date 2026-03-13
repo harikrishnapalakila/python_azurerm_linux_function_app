@@ -1,15 +1,15 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.0"
-    }
-  }
-}
+#terraform {
+#  required_providers {
+#    azurerm = {
+#      source  = "hashicorp/azurerm"
+#      version = "~> 3.0"
+#    }
+#  }
+#}
 
-provider "azurerm" {
-  features {}
-}
+#provider "azurerm" {
+#  features {}
+#}
 
 variable "location" {
   description = "Azure region"
@@ -377,3 +377,4 @@ output "app_insights_key" {
   value       = azurerm_application_insights.functions.instrumentation_key
   sensitive   = true
 }
+
