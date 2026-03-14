@@ -189,7 +189,7 @@ resource "azapi_resource" "search_connection" {
         ResourceId = azurerm_search_service.search.id
       }
     }
-}
+ }
 }
 
 
