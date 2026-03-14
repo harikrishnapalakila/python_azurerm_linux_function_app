@@ -170,7 +170,8 @@ resource "azapi_resource" "search_connection" {
    body = {
     properties = {
       category      = "CognitiveSearch"
-      target        = azurerm_search_service.search.endpoint # The Search URL
+      #target        = azurerm_search_service.search.endpoint # The Search URL
+      target = "https://${azurerm_search_service.search.name}.search.windows.net"
       authType      = "ApiKey"                             # Or "AAD"
       credentials = {
         key = azurerm_search_service.search.primary_key
