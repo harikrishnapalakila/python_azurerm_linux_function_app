@@ -26,6 +26,8 @@ provider "azurerm" {
 
 provider "azapi" {
      # Configuration options 
+     # This is the global flag to stop the "no Host" regex check
+  enable_schema_validation = false
 }
 
 resource "azurerm_resource_group" "python-linux-functionapp" {
