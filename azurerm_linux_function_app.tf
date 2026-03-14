@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.0" # Pin to the latest major version
     }
+    azapi = { 
+      source = "Azure/azapi" 
+      version = "2.8.0"
+    } 
   }
 }
 
@@ -20,7 +24,9 @@ provider "azurerm" {
   # tenant_id       = "your-tenant-id"
 }
 
-
+provider "azapi" {
+     # Configuration options 
+}
 
 resource "azurerm_resource_group" "python-linux-functionapp" {
   name     = "RG-python-linux-functionapp"

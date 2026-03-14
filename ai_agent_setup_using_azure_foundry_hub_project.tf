@@ -1,0 +1,159 @@
+########################>>>> Create Resoruce Group for AI Agent Infra Setup <<<<#####################
+# 1. Resource Group
+resource "azurerm_resource_group" "rg-aiagent" {
+  name     = "RG-ai-agent-ai-foundry-resourcegroup"
+  location = "East US"
+}
+
+########################>>>> Create AI Foundry HUB for AI Agent Infra Setup <<<<#####################
+# 2. AI Foundry Hub 
+# Refer to the Azure AI Foundry documentation for implementation details
+resource "azurerm_ai_foundry" "hub" {
+  name                = "ai-hub-ai-agent"
+  location            = azurerm_resource_group.rg-aiagent.location
+  resource_group_name = azurerm_resource_group.rg-aiagent.name
+  sku_name            = "S0"
+  
+  identity {
+    type = "SystemAssigned"
+  }
+  #storage_account_id = azurerm_storage_account.sa.id
+  #key_vault_id       = azurerm_key_vault.kv.id
+}
+
+########################>>>> Create AI Foundry HUB Project for AI Agent Infra Setup <<<<#####################
+# 3. AI Foundry Hub Project 
+resource "azurerm_ai_foundry_project" "project" {
+  name               = "ai-project-ai-agent"
+  location           = azurerm_resource_group.rg-aiagent.location
+  ai_foundry_id       = azurerm_ai_foundry.hub.id
+  #ai_services_hub_id = azurerm_ai_foundry.hub.id
+  identity { type = "SystemAssigned" }
+}
+
+
+
+resource "azurerm_cognitive_account" "cogacctaiagent" {
+  name                = "cogacctaccount-aiagent"
+  location            = azurerm_resource_group.rg-aiagent.location
+  resource_group_name = azurerm_resource_group.rg-aiagent.name
+  kind                = "OpenAI"
+  sku_name = "S0"
+  tags = {
+    Acceptance = "Test"
+  }
+}
+
+# Deployment for OpenAI's GPT-4o in the AI Foundry Project
+resource "azurerm_cognitive_deployment" "gpt4o" {
+  name                 = "gpt-4o-deployment-ai-agent"
+  cognitive_account_id = azurerm_cognitive_account.cogacctaiagent.id
+  
+  # Link to your AI Foundry Project
+  #project_name         = azurerm_cognitive_account_project.example.name
+
+  model {
+    format  = "OpenAI"
+    name    = "gpt-4o"
+    version = "2024-11-20" # Use the latest supported version for your region
+  }
+
+  sku {
+    # 'GlobalStandard' is recommended for gpt-4o to access global throughput
+    name     = "GlobalStandard" 
+    capacity = 10 # Units of 1,000 Tokens Per Minute (TPM)
+  }
+
+  # Optional: Standard RAI (Responsible AI) policy
+  rai_policy_name = "Microsoft.Default"
+
+   #scale {
+   # type = "Standard"
+  #}
+}
+
+############ Azure AI Search Service ######
+resource "azurerm_search_service" "search" {
+  name                = "aisearch-service-ai-agent"
+  resource_group_name = azurerm_resource_group.rg-aiagent.name
+  location            = azurerm_resource_group.rg-aiagent.location
+  sku                 = "basic"
+
+  # Optional: Configure capacity (not available for 'free' SKU)
+  replica_count   = 1
+  partition_count = 1
+}
+
+
+########## Azure AI Agent ##################
+#3. Create the AI Agent (Assistant) - support-Agent - 
+# Enable Code Interpreter - ai agent
+
+
+resource "azapi_data_plane_resource" "ai_agent" {
+  type      = "Microsoft.AIFoundry/agents/assistants@v1"
+  # The parent_id points to the project's data plane endpoint
+  parent_id = "${azurerm_ai_foundry_project.project.id}/api" 
+
+  body = {
+    model        = "gpt-4o"
+    name         = "support-agent" # Display name    
+    instructions = "You are a helpful customer support assistant."
+  # 2.Agent - name = "data-analyst-agent"
+  #  instructions = "Use python code to solve math problems and analyze data."
+    tools        = [
+        {
+            type = "code_interpreter"
+        }
+    ] # Add tools like code_interpreter or functions here
+  }
+}
+
+output "agent_id" {
+  value = azapi_data_plane_resource.ai_agent.name # This returns the 'asst_...' ID
+}
+
+########## Step A: Enable Azure AI Search (Knowledge Base) for RAG ############
+
+resource "azapi_resource" "search_connection" {
+  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2024-10-01-preview"
+  name      = "my-search-connection"
+  parent_id = azurerm_ai_foundry_project.project.id
+
+  body = {
+    properties = {
+      connectionType = "AzureAISearch"
+      endpoint       = "https://${azurerm_search_service.example.name}.search.windows.net"
+      # Auth can be API Key or Managed Identity (recommended)
+      authType       = "ApiKey" 
+      credentials = {
+        key = azurerm_search_service.example.primary_key
+      }
+    }
+  }
+}
+
+
+##### Step B: Add File Search Tool to Agent ##############
+
+resource "azapi_data_plane_resource" "ai_agent_with_search" {
+  type      = "Microsoft.AIFoundry/agents/assistants@v1"
+  parent_id = "${azurerm_ai_foundry_project.project.id}/api"
+
+  body = {
+    model        = "gpt-4o"
+    name         = "research-agent"
+    instructions = "Use the search tool to find information in uploaded documents."
+    tools = [
+      {
+        type = "file_search"
+      }
+    ]
+    # Optional: Link a specific vector store if you have pre-indexed data
+    # tool_resources = {
+    #   file_search = {
+    #     vector_store_ids = ["vs_abc123"]
+    #   }
+    # }
+  }
+}
