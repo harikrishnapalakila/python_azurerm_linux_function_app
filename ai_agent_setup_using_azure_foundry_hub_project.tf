@@ -222,7 +222,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
   parent_id = "https://eastus.api.azureml.ms"
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
-  schema_validation_enabled = false
+  #schema_validation_enabled = false
 
 
   body = {
