@@ -160,10 +160,10 @@ resource "azurerm_search_service" "search" {
 ################### Fetch the existing AI Foundry Project ###############################
 
 # 1. Fetch the existing AI Foundry Project
-data "azurerm_ai_foundry_project" "existing_project" {
-  name                = "ai-project-ai-agent"
-  resource_group_name = "RG-ai-agent-ai-foundry-resourcegroup"
-}
+#data "azurerm_ai_foundry_project" "existing_project" {
+#  name                = "ai-project-ai-agent"
+#  resource_group_name = "RG-ai-agent-ai-foundry-resourcegroup"
+#}
 
 # 2. Reference the ID as the parent_id
 #resource "azapi_resource" "search_connection" {
@@ -171,6 +171,23 @@ data "azurerm_ai_foundry_project" "existing_project" {
  # name      = "search-service-connection"
 #  parent_id = data.azurerm_ai_foundry_project.existing_project.id
 #}
+
+
+
+variable "project_name" {
+  type        = string
+  description = "The friendly name of your AI Foundry Project"
+  default     = "ai-project-ai-agent"
+}
+
+variable "ai_foundry_host" {
+  type        = string
+  description = "The regional discovery URL (e.g. eastus.api.azureml.ms) without https://"
+  default     = "eastus.api.azureml.ms"
+}
+
+
+
 ########## Azure AI Agent ##################
 #3. Create the AI Agent (Assistant) - support-Agent - 
 # Enable Code Interpreter - ai agent
@@ -180,7 +197,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   # The parent_id points to the project's data plane endpoint
   #parent_id  = azurerm_ai_foundry_project.project.id
-  parent_id  = data.azurerm_ai_foundry_project.existing_project.id
+  #parent_id  = data.azurerm_ai_foundry_project.existing_project.id
   #parent_id = "${azurerm_ai_foundry_project.project.id}/api" 
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
@@ -196,6 +213,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
   # The provider requires: [HOSTNAME]/[PATH]
   # We use replace to strip 'https://' and ensure no double slashes
   #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  parent_id = "${var.ai_foundry_host}/api/projects/${var.project_name}"
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
   #schema_validation_enabled = false
