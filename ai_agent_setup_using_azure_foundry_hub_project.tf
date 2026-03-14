@@ -125,6 +125,7 @@ resource "azurerm_search_service" "search" {
 
 
 resource "azapi_data_plane_resource" "ai_agent" {
+  name         = "support-agent" # Display name  
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   # The parent_id points to the project's data plane endpoint
   parent_id = "${azurerm_ai_foundry_project.project.id}/api" 
@@ -157,11 +158,11 @@ resource "azapi_resource" "search_connection" {
   body = {
     properties = {
       connectionType = "AzureAISearch"
-      endpoint       = "https://${azurerm_search_service.example.name}.search.windows.net"
+      endpoint       = "https://${azurerm_search_service.search.name}.search.windows.net"
       # Auth can be API Key or Managed Identity (recommended)
       authType       = "ApiKey" 
       credentials = {
-        key = azurerm_search_service.example.primary_key
+        key = azurerm_search_service.search.primary_key
       }
     }
   }
@@ -171,6 +172,7 @@ resource "azapi_resource" "search_connection" {
 ##### Step B: Add File Search Tool to Agent ##############
 
 resource "azapi_data_plane_resource" "ai_agent_with_search" {
+    name         = "research-agent"
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   parent_id = "${azurerm_ai_foundry_project.project.id}/api"
 
