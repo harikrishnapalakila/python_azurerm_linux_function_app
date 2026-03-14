@@ -194,7 +194,8 @@ variable "ai_foundry_host" {
 #3. Create the AI Agent (Assistant) - support-Agent - 
 # Enable Code Interpreter - ai agent
 
-resource "azapi_data_plane_resource" "ai_agent" {
+#resource "azapi_data_plane_resource" "ai_agent" {
+resource "azapi_resource" "ai_agent" {    
   name         = "support-agent" # Display name  
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   # The parent_id points to the project's data plane endpoint
@@ -219,10 +220,13 @@ resource "azapi_data_plane_resource" "ai_agent" {
   #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
   #parent_id = "${var.ai_foundry_host}/api/projects/${var.project_name}"
   #parent_id = "eastus.api.azureml.ms/api/projects/ai-project-ai-agent"
-  parent_id = "https://eastus.api.azureml.ms"
+  #parent_id = "https://eastus.api.azureml.ms"
+   parent_id = azurerm_ai_foundry_project.project.id
+
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
   #schema_validation_enabled = false
+
 
 
   body = {
@@ -240,7 +244,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
 
   # Ensure the project is fully ready
   depends_on = [azurerm_ai_foundry_project.project]
-  response_export_values = ["id", "name"]
+  #response_export_values = ["id", "name"]
 
 
 }
