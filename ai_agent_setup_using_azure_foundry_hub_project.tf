@@ -217,13 +217,13 @@ output "agent_id" {
 ########## Step A: Enable Azure AI Search (Knowledge Base) for RAG ############
 
 resource "azapi_resource" "search_connection" {
-  #type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview"  #The supported versions are [2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
+  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview"  #The supported versions are [2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
   # You can try to update `azapi` provider to the latest version or disable the validation using the feature flag `schema_validation_enabled = false` within the resource block
   
   
   # FIX: Use the MachineLearningServices namespace to match your project's provider
   #type      = "Microsoft.MachineLearningServices/workspaces/connections@2024-04-01-preview"
-  type      = "Microsoft.MachineLearningServices/workspaces/connections@2025-12-01"
+  #type      = "Microsoft.MachineLearningServices/workspaces/connections@2025-10-01-preview" #The supported versions are [2020-06-01, 2020-08-01, 2020-09-01-preview, 2021-01-01, 2021-03-01-preview, 2021-04-01, 2021-07-01, 2022-01-01-preview, 2022-02-01-preview, 2022-05-01, 2022-06-01-preview, 2022-10-01, 2022-10-01-preview, 2022-12-01-preview, 2023-02-01-preview, 2023-04-01, 2023-04-01-preview, 2023-06-01-preview, 2023-08-01-preview, 2023-10-01, 2024-01-01-preview, 2024-04-01, 2024-04-01-preview, 2024-07-01-preview, 2024-10-01, 2024-10-01-preview, 2025-01-01-preview, 2025-04-01, 2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
 
   name      = "search-service-connection"
   #parent_id = azurerm_ai_foundry_project.project.id
