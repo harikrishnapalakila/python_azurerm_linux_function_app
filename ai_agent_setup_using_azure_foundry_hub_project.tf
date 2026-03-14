@@ -182,6 +182,7 @@ resource "azapi_resource" "search_connection" {
       }
     }
 }
+}
 
 
 ##### Step B: Add File Search Tool to Agent ##############
