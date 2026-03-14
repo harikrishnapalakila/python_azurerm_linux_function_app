@@ -189,6 +189,36 @@ variable "ai_foundry_host" {
 }
 
 
+######### Azure Research-AI-Agent ################
+
+resource "azapi_data_plane_resource" "Research-Ai-Agent" {
+  # This is the ONLY type that currently supports Foundry Agents
+  type      = "Microsoft.AIFoundry/agents/assistants@v1"
+  name      = "Assistant-Ai-Agent"
+  
+  # Format: [Hostname]/api/projects/[ProjectName]
+  # We use replace to ensure the hostname is clean
+  parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+
+  # CRITICAL: Bypasses the 'no Host' and 'type not found' validation bugs
+  schema_validation_enabled = false
+
+  body = {
+    model        = "gpt-4o"
+    name         = "Research-ai-agent"
+    instructions = "You are a helpful customer support assistant."
+    tools = [
+      {
+        type = "code_interpreter"
+      }
+    ]
+  }
+
+  depends_on = [azurerm_ai_foundry_project.project]
+}
+
+
+
 ########## Azure Assistant-Ai-Agent  ############
 
 
