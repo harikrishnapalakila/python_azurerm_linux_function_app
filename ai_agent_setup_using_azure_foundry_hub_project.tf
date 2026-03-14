@@ -10,7 +10,7 @@ resource "azurerm_resource_group" "rg-aiagent" {
 
 # 1. Storage Account (Required for AI Foundry Hub)
 resource "azurerm_storage_account" "sa-aiagent" {
-  name                     = "stfoundrymetadata001aiagent" # Must be globally unique, lowercase, numbers only
+  name                     = "stacctaiagent" # Must be globally unique, lowercase, numbers only
   resource_group_name      = azurerm_resource_group.rg-aiagent.name
   location                 = azurerm_resource_group.rg-aiagent.location
   account_tier             = "Standard"
@@ -22,7 +22,7 @@ data "azurerm_client_config" "current" {}
 
 # 2. Key Vault (Required for AI Foundry Hub)
 resource "azurerm_key_vault" "kv-aiagent" {
-  name                = "kv-foundry-secrets-001-ai-agent"
+  name                = "kv-foundry-ai-agent"
   location            = azurerm_resource_group.rg-aiagent.location
   resource_group_name = azurerm_resource_group.rg-aiagent.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
