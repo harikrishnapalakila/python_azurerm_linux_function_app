@@ -29,7 +29,7 @@ provider "azapi" {
      # This is the global flag to stop the "no Host" regex check
   #enable_schema_validation = false
   # In azapi v2.0+, the argument is exactly this:
-  schema_validation_enabled = false
+  #schema_validation_enabled = false
 }
 
 resource "azurerm_resource_group" "python-linux-functionapp" {
