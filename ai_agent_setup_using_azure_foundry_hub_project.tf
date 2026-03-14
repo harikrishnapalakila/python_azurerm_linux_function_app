@@ -153,20 +153,34 @@ output "agent_id" {
 resource "azapi_resource" "search_connection" {
   type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview"  #The supported versions are [2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
   # You can try to update `azapi` provider to the latest version or disable the validation using the feature flag `schema_validation_enabled = false` within the resource block
-  name      = "my-search-connection"
+  name      = "search-service-connection"
   parent_id = azurerm_ai_foundry_project.project.id
 
-  body = {
+  #body = {
+  #  properties = {
+  #    connectionType = "AzureAISearch"
+  #    endpoint       = "https://${azurerm_search_service.search.name}.search.windows.net"
+  #    # Auth can be API Key or Managed Identity (recommended)
+  #    authType       = "ApiKey" 
+  #    credentials = {
+  #      key = azurerm_search_service.search.primary_key
+  #    }
+  #  }
+  #}
+   body = {
     properties = {
-      connectionType = "AzureAISearch"
-      endpoint       = "https://${azurerm_search_service.search.name}.search.windows.net"
-      # Auth can be API Key or Managed Identity (recommended)
-      authType       = "ApiKey" 
+      category      = "CognitiveSearch"
+      target        = azurerm_search_service.search.endpoint # The Search URL
+      authType      = "ApiKey"                             # Or "AAD"
       credentials = {
         key = azurerm_search_service.search.primary_key
       }
+      # Metadata for the UI to recognize it as a Search connection
+      metadata = {
+        ApiType    = "Azure"
+        ResourceId = azurerm_search_service.search.id
+      }
     }
-  }
 }
 
 
