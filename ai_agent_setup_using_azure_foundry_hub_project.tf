@@ -189,13 +189,43 @@ variable "ai_foundry_host" {
 }
 
 
+########## Azure Assistant-Ai-Agent  ############
+
+
+resource "azapi_resource" "Assistant-Ai-Agent" {
+  # Standard ARM Management Plane type
+  #type      = "Microsoft.CognitiveServices/accounts/projects/assistants@2024-05-01-preview"
+  type      = "Microsoft.CognitiveServices/accounts/projects/assistants@2025-10-01-preview"
+  name      = "Assistant-Ai-Agent"
+  
+  # Valid ARM Resource ID (starts with /subscriptions/...)
+  parent_id = azurerm_ai_foundry_project.project.id
+
+  body = {
+    properties = {
+      model        = "gpt-4o"
+      name         = "Assistant-ai-agent"
+      instructions = "You are a helpful customer support assistant."
+      tools = [
+        {
+          type = "code_interpreter"
+        }
+      ]
+    }
+  }
+
+  # Disables local regex checks that cause "parent_id is invalid"
+  schema_validation_enabled = false
+}
+
+
 
 ########## Azure AI Agent ##################
 #3. Create the AI Agent (Assistant) - support-Agent - 
 # Enable Code Interpreter - ai agent
 
 #resource "azapi_data_plane_resource" "ai_agent" 
-resource "azapi_resource" "ai_agent" {
+resource "azapi_data_plane_resource" "ai_agent" {
   name         = "support-agent" # Display name  
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   # The parent_id points to the project's data plane endpoint
