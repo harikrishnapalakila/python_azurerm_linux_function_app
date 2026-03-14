@@ -131,7 +131,8 @@ resource "azapi_data_plane_resource" "ai_agent" {
   #parent_id = "${azurerm_ai_foundry_project.project.id}/api" 
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
-  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
+  #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
+  parent_id = "${trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   body = {
     model        = "gpt-4o"
@@ -159,7 +160,8 @@ resource "azapi_resource" "search_connection" {
   # You can try to update `azapi` provider to the latest version or disable the validation using the feature flag `schema_validation_enabled = false` within the resource block
   name      = "search-service-connection"
   #parent_id = azurerm_ai_foundry_project.project.id
-  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
+  parent_id = azurerm_ai_foundry_project.project.id
+  #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
 
   #body = {
   #  properties = {
@@ -198,7 +200,8 @@ resource "azapi_data_plane_resource" "ai_agent_with_search" {
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
-  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
+  #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
+  parent_id = "${trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   body = {
     model        = "gpt-4o"
