@@ -130,7 +130,8 @@ resource "azapi_data_plane_resource" "ai_agent" {
   # The parent_id points to the project's data plane endpoint
   #parent_id = "${azurerm_ai_foundry_project.project.id}/api" 
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
-  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
 
   body = {
     model        = "gpt-4o"
@@ -157,7 +158,8 @@ resource "azapi_resource" "search_connection" {
   type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview"  #The supported versions are [2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
   # You can try to update `azapi` provider to the latest version or disable the validation using the feature flag `schema_validation_enabled = false` within the resource block
   name      = "search-service-connection"
-  parent_id = azurerm_ai_foundry_project.project.id
+  #parent_id = azurerm_ai_foundry_project.project.id
+  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
 
   #body = {
   #  properties = {
@@ -195,7 +197,8 @@ resource "azapi_data_plane_resource" "ai_agent_with_search" {
     name         = "research-agent"
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
-  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
 
   body = {
     model        = "gpt-4o"
