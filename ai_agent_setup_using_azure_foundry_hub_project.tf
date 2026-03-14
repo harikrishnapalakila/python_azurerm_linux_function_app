@@ -253,7 +253,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
 
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
-  schema_validation_enabled = false
+  #schema_validation_enabled = false
 
   body = {
     model        = "gpt-4o"
@@ -275,8 +275,8 @@ resource "azapi_data_plane_resource" "ai_agent" {
 
 output "agent_id" {
     # This will correctly return the server-generated "asst_..." ID
-  #value = azapi_data_plane_resource.ai_agent.name # This returns the 'asst_...' ID
-  value = azapi_resource.ai_agent.name # This returns the 'asst_...' ID
+  value = azapi_data_plane_resource.ai_agent.name # This returns the 'asst_...' ID
+  #value = azapi_resource.ai_agent.name # This returns the 'asst_...' ID
 }
 
 ########## Step A: Enable Azure AI Search (Knowledge Base) for RAG ############
