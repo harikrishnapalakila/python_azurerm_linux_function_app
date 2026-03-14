@@ -5,6 +5,40 @@ resource "azurerm_resource_group" "rg-aiagent" {
   location = "East US"
 }
 
+
+########################>>> Storage account + Key vault <<<<###############################
+
+# 1. Storage Account (Required for AI Foundry Hub)
+resource "azurerm_storage_account" "sa-aiagent" {
+  name                     = "stfoundrymetadata001aiagent" # Must be globally unique, lowercase, numbers only
+  resource_group_name      = azurerm_resource_group.rg-aiagent.name
+  location                 = azurerm_resource_group.rg-aiagent.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+# Data source to get current Tenant/Object IDs for the Key Vault access policy
+data "azurerm_client_config" "current" {}
+
+# 2. Key Vault (Required for AI Foundry Hub)
+resource "azurerm_key_vault" "kv-aiagent" {
+  name                = "kv-foundry-secrets-001-ai-agent"
+  location            = azurerm_resource_group.rg-aiagent.location
+  resource_group_name = azurerm_resource_group.rg-aiagent.name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  sku_name            = "standard"
+
+  # Access policy allowing the deployment user to manage it
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions     = ["Get", "Create", "Delete", "List", "Update"]
+    secret_permissions  = ["Get", "List", "Set", "Delete"]
+    storage_permissions = ["Get", "List", "Set", "Delete"]
+  }
+}
+
 ########################>>>> Create AI Foundry HUB for AI Agent Infra Setup <<<<#####################
 # 2. AI Foundry Hub 
 # Refer to the Azure AI Foundry documentation for implementation details
@@ -12,13 +46,13 @@ resource "azurerm_ai_foundry" "hub" {
   name                = "ai-hub-ai-agent"
   location            = azurerm_resource_group.rg-aiagent.location
   resource_group_name = azurerm_resource_group.rg-aiagent.name
-  sku_name            = "S0"
+  #sku_name            = "S0"
+  storage_account_id = azurerm_storage_account.sa-aiagent.id
+  key_vault_id       = azurerm_key_vault.kv-aiagent.id
   
   identity {
     type = "SystemAssigned"
   }
-  #storage_account_id = azurerm_storage_account.sa.id
-  #key_vault_id       = azurerm_key_vault.kv.id
 }
 
 ########################>>>> Create AI Foundry HUB Project for AI Agent Infra Setup <<<<#####################
@@ -26,8 +60,8 @@ resource "azurerm_ai_foundry" "hub" {
 resource "azurerm_ai_foundry_project" "project" {
   name               = "ai-project-ai-agent"
   location           = azurerm_resource_group.rg-aiagent.location
-  ai_foundry_id       = azurerm_ai_foundry.hub.id
-  #ai_services_hub_id = azurerm_ai_foundry.hub.id
+  #ai_foundry_id       = azurerm_ai_foundry.hub.id
+  ai_services_hub_id = azurerm_ai_foundry.hub.id
   identity { type = "SystemAssigned" }
 }
 
