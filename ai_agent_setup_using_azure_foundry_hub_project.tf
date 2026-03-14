@@ -78,6 +78,8 @@ resource "azurerm_cognitive_account" "cogacctaiagent" {
   }
 }
 
+
+
 # Deployment for OpenAI's GPT-4o in the AI Foundry Project
 resource "azurerm_cognitive_deployment" "gpt4o" {
   name                 = "gpt-4o-deployment-ai-agent"
