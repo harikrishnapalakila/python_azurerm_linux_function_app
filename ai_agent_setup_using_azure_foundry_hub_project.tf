@@ -119,6 +119,48 @@ resource "azurerm_search_service" "search" {
 }
 
 
+############ AI - user roles - RBAC #######################
+
+
+# 1. Define the role assignment for the service principal
+resource "azurerm_role_assignment" "ai_user" {
+  scope                = azurerm_ai_foundry_project.project.id
+  role_definition_name = "Azure AI User"
+  #principal_id         = var.service_principal_object_id # Use the Object ID, not Client ID
+  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
+  
+  # Recommended for service principals to avoid replication delay errors
+  skip_service_principal_aad_check = true
+}
+
+# 2. If the Project uses a Managed Identity, it also needs access to the Hub
+resource "azurerm_role_assignment" "project_identity_on_hub" {
+  scope                = azurerm_ai_foundry.hub.id
+  role_definition_name = "Azure AI User"
+  #principal_id         = azurerm_ai_foundry_project.project.identity[0].principal_id
+  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
+}
+
+
+
+# Assign the Azure AI User role to the Project
+resource "azurerm_role_assignment" "ai_user_project" {
+  scope                = azurerm_ai_foundry_project.project.id
+  role_definition_name = "Azure AI User"
+  #principal_id         = "your-service-principal-object-id" 
+  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
+  
+  # Prevents failure if the principal is not yet fully propagated in Entra ID
+  skip_service_principal_aad_check = true
+}
+
+
+
+
+
+
+
+
 ########## Azure AI Agent ##################
 #3. Create the AI Agent (Assistant) - support-Agent - 
 # Enable Code Interpreter - ai agent
@@ -145,7 +187,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
   parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
-  schema_validation_enabled = false
+  #schema_validation_enabled = false
 
   body = {
     model        = "gpt-4o"
@@ -163,7 +205,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
   # Ensure the project is fully ready
   depends_on = [azurerm_ai_foundry_project.project]
 
-  
+
 }
 
 output "agent_id" {
