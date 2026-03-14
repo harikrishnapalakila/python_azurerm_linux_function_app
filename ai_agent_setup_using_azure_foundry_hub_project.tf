@@ -138,7 +138,14 @@ resource "azapi_data_plane_resource" "ai_agent" {
   #parent_id = "/api/projects/${azurerm_ai_foundry_project.project.name}"
   # We combine the clean host and path into one string.
   # replace() ensures no "https://" and no trailing "/" disrupt the "Host" parsing.
+  #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+
+  # The provider requires: [HOSTNAME]/[PATH]
+  # We use replace to strip 'https://' and ensure no double slashes
   parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+
+  # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
+  schema_validation_enabled = false
 
   body = {
     model        = "gpt-4o"
@@ -152,6 +159,11 @@ resource "azapi_data_plane_resource" "ai_agent" {
         }
     ] # Add tools like code_interpreter or functions here
   }
+
+  # Ensure the project is fully ready
+  depends_on = [azurerm_ai_foundry_project.project]
+
+  
 }
 
 output "agent_id" {
@@ -233,6 +245,6 @@ resource "azapi_data_plane_resource" "ai_agent_with_search" {
     #   }
     # }
   }
-  
+
 }
 
