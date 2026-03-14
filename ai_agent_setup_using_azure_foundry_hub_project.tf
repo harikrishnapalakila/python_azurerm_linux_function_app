@@ -122,37 +122,37 @@ resource "azurerm_search_service" "search" {
 ############ AI - user roles - RBAC #######################
 
 
-# 1. Define the role assignment for the service principal
-resource "azurerm_role_assignment" "ai_user" {
-  scope                = azurerm_ai_foundry_project.project.id
-  role_definition_name = "Azure AI User"
-  #principal_id         = var.service_principal_object_id # Use the Object ID, not Client ID
-  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
-  
-  # Recommended for service principals to avoid replication delay errors
-  skip_service_principal_aad_check = true
-}
+## 1. Define the role assignment for the service principal
+#resource "azurerm_role_assignment" "ai_user" {
+#  scope                = azurerm_ai_foundry_project.project.id
+#  role_definition_name = "Azure AI User"
+#  #principal_id         = var.service_principal_object_id # Use the Object ID, not Client ID
+#  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
+#  
+#  # Recommended for service principals to avoid replication delay errors
+#  skip_service_principal_aad_check = true
+#}
 
-# 2. If the Project uses a Managed Identity, it also needs access to the Hub
-resource "azurerm_role_assignment" "project_identity_on_hub" {
-  scope                = azurerm_ai_foundry.hub.id
-  role_definition_name = "Azure AI User"
-  #principal_id         = azurerm_ai_foundry_project.project.identity[0].principal_id
-  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
-}
+## 2. If the Project uses a Managed Identity, it also needs access to the Hub
+#resource "azurerm_role_assignment" "project_identity_on_hub" {
+#  scope                = azurerm_ai_foundry.hub.id
+#  role_definition_name = "Azure AI User"
+#  #principal_id         = azurerm_ai_foundry_project.project.identity[0].principal_id
+#  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
+#}
 
 
 
-# Assign the Azure AI User role to the Project
-resource "azurerm_role_assignment" "ai_user_project" {
-  scope                = azurerm_ai_foundry_project.project.id
-  role_definition_name = "Azure AI User"
-  #principal_id         = "your-service-principal-object-id" 
-  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
-  
-  # Prevents failure if the principal is not yet fully propagated in Entra ID
-  skip_service_principal_aad_check = true
-}
+## Assign the Azure AI User role to the Project
+#resource "azurerm_role_assignment" "ai_user_project" {
+#  scope                = azurerm_ai_foundry_project.project.id
+#  role_definition_name = "Azure AI User"
+#  #principal_id         = "your-service-principal-object-id" 
+#  principal_id         = "2eabbcee-2617-4adb-9885-43413d46c33f"
+#  
+#  # Prevents failure if the principal is not yet fully propagated in Entra ID
+#  skip_service_principal_aad_check = true
+#}
 
 
 
@@ -170,6 +170,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
   name         = "support-agent" # Display name  
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   # The parent_id points to the project's data plane endpoint
+  parent_id  = azurerm_ai_foundry_project.project.id
   #parent_id = "${azurerm_ai_foundry_project.project.id}/api" 
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
@@ -184,7 +185,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
 
   # The provider requires: [HOSTNAME]/[PATH]
   # We use replace to strip 'https://' and ensure no double slashes
-  parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
   #schema_validation_enabled = false
@@ -216,8 +217,14 @@ output "agent_id" {
 ########## Step A: Enable Azure AI Search (Knowledge Base) for RAG ############
 
 resource "azapi_resource" "search_connection" {
-  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview"  #The supported versions are [2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
+  #type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview"  #The supported versions are [2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
   # You can try to update `azapi` provider to the latest version or disable the validation using the feature flag `schema_validation_enabled = false` within the resource block
+  
+  
+  # FIX: Use the MachineLearningServices namespace to match your project's provider
+  #type      = "Microsoft.MachineLearningServices/workspaces/connections@2024-04-01-preview"
+  type      = "Microsoft.MachineLearningServices/workspaces/connections@2025-12-01"
+
   name      = "search-service-connection"
   #parent_id = azurerm_ai_foundry_project.project.id
   parent_id = azurerm_ai_foundry_project.project.id
@@ -258,6 +265,7 @@ resource "azapi_resource" "search_connection" {
 resource "azapi_data_plane_resource" "ai_agent_with_search" {
     name         = "research-agent"
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
+  parent_id  = azurerm_ai_foundry_project.project.id
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
@@ -269,7 +277,7 @@ resource "azapi_data_plane_resource" "ai_agent_with_search" {
   #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
   # We combine the clean host and path into one string.
   # replace() ensures no "https://" and no trailing "/" disrupt the "Host" parsing.
-  parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   body = {
     model        = "gpt-4o"
