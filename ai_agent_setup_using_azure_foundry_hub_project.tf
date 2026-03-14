@@ -151,7 +151,8 @@ output "agent_id" {
 ########## Step A: Enable Azure AI Search (Knowledge Base) for RAG ############
 
 resource "azapi_resource" "search_connection" {
-  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2024-10-01-preview"
+  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview"  #The supported versions are [2025-04-01-preview, 2025-06-01, 2025-07-01-preview, 2025-09-01, 2025-10-01-preview].
+  # You can try to update `azapi` provider to the latest version or disable the validation using the feature flag `schema_validation_enabled = false` within the resource block
   name      = "my-search-connection"
   parent_id = azurerm_ai_foundry_project.project.id
 
