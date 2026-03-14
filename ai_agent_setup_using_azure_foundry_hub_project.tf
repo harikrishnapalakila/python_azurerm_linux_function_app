@@ -194,8 +194,8 @@ variable "ai_foundry_host" {
 #3. Create the AI Agent (Assistant) - support-Agent - 
 # Enable Code Interpreter - ai agent
 
-#resource "azapi_data_plane_resource" "ai_agent" {
-resource "azapi_resource" "ai_agent" {    
+#resource "azapi_data_plane_resource" "ai_agent" 
+resource "azapi_resource" "ai_agent" {
   name         = "support-agent" # Display name  
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   # The parent_id points to the project's data plane endpoint
@@ -213,9 +213,7 @@ resource "azapi_resource" "ai_agent" {
   # replace() ensures no "https://" and no trailing "/" disrupt the "Host" parsing.
   #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
   
-
-
-  # The provider requires: [HOSTNAME]/[PATH]
+# The provider requires: [HOSTNAME]/[PATH]
   # We use replace to strip 'https://' and ensure no double slashes
   #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
   #parent_id = "${var.ai_foundry_host}/api/projects/${var.project_name}"
@@ -226,8 +224,6 @@ resource "azapi_resource" "ai_agent" {
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
   #schema_validation_enabled = false
-
-
 
   body = {
     model        = "gpt-4o"
@@ -245,8 +241,6 @@ resource "azapi_resource" "ai_agent" {
   # Ensure the project is fully ready
   depends_on = [azurerm_ai_foundry_project.project]
   #response_export_values = ["id", "name"]
-
-}
 }
 
 output "agent_id" {
