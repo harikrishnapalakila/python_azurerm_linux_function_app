@@ -133,8 +133,12 @@ resource "azapi_data_plane_resource" "ai_agent" {
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
   #parent_id = "${trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://")}/api/projects/${azurerm_ai_foundry_project.project.name}"
-  host = trim(trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://"), "/")
-  parent_id = "/api/projects/${azurerm_ai_foundry_project.project.name}"
+  #parent_id = "${trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  #host = trim(trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://"), "/")
+  #parent_id = "/api/projects/${azurerm_ai_foundry_project.project.name}"
+  # We combine the clean host and path into one string.
+  # replace() ensures no "https://" and no trailing "/" disrupt the "Host" parsing.
+  parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   body = {
     model        = "gpt-4o"
@@ -204,8 +208,14 @@ resource "azapi_data_plane_resource" "ai_agent_with_search" {
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.id}"
   #parent_id = "${trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://")}/api/projects/${azurerm_ai_foundry_project.project.name}"
-  host = trim(trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://"), "/")
-   parent_id = "/api/projects/${azurerm_ai_foundry_project.project.name}"
+  #host = trim(trimprefix(azurerm_ai_foundry.hub.discovery_url, "https://"), "/")
+  #parent_id = "/api/projects/${azurerm_ai_foundry_project.project.name}"
+   # We combine the clean host and path into one string.
+  # replace() ensures no "https://" and no trailing "/" disrupt the "Host" parsing.
+  #parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
+  # We combine the clean host and path into one string.
+  # replace() ensures no "https://" and no trailing "/" disrupt the "Host" parsing.
+  parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   body = {
     model        = "gpt-4o"
