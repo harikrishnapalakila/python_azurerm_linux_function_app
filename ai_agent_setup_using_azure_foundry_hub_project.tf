@@ -157,20 +157,30 @@ resource "azurerm_search_service" "search" {
 
 
 
+################### Fetch the existing AI Foundry Project ###############################
 
+# 1. Fetch the existing AI Foundry Project
+data "azurerm_ai_foundry_project" "existing_project" {
+  name                = "ai-project-ai-agent"
+  resource_group_name = "RG-ai-agent-ai-foundry-resourcegroup"
+}
 
-
-
+# 2. Reference the ID as the parent_id
+#resource "azapi_resource" "search_connection" {
+ # type      = "Microsoft.MachineLearningServices/workspaces/connections@2025-12-01"
+ # name      = "search-service-connection"
+#  parent_id = data.azurerm_ai_foundry_project.existing_project.id
+#}
 ########## Azure AI Agent ##################
 #3. Create the AI Agent (Assistant) - support-Agent - 
 # Enable Code Interpreter - ai agent
-
 
 resource "azapi_data_plane_resource" "ai_agent" {
   name         = "support-agent" # Display name  
   type      = "Microsoft.AIFoundry/agents/assistants@v1"
   # The parent_id points to the project's data plane endpoint
-  parent_id  = azurerm_ai_foundry_project.project.id
+  #parent_id  = azurerm_ai_foundry_project.project.id
+  parent_id  = data.azurerm_ai_foundry_project.existing_project.id
   #parent_id = "${azurerm_ai_foundry_project.project.id}/api" 
   #parent_id = "${azurerm_ai_foundry_project.project.endpoint}/api"
   #parent_id = "${azurerm_ai_foundry.hub.discovery_url}/api/projects/${azurerm_ai_foundry_project.project.name}"
