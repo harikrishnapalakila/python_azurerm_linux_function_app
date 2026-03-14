@@ -222,6 +222,7 @@ resource "azapi_data_plane_resource" "ai_agent" {
 
   # IMPORTANT: Disable schema validation for this resource to bypass the 'Host' check bug
   schema_validation_enabled = false
+  
 
   body = {
     model        = "gpt-4o"
