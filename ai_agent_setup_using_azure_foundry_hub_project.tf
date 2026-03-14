@@ -201,7 +201,7 @@ resource "azapi_data_plane_resource" "Research-Ai-Agent" {
   parent_id = "${replace(azurerm_ai_foundry.hub.discovery_url, "https://", "")}/api/projects/${azurerm_ai_foundry_project.project.name}"
 
   # CRITICAL: Bypasses the 'no Host' and 'type not found' validation bugs
-  schema_validation_enabled = false
+  #schema_validation_enabled = false
 
   body = {
     model        = "gpt-4o"
