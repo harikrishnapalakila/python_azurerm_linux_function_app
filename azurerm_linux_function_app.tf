@@ -27,7 +27,9 @@ provider "azurerm" {
 provider "azapi" {
      # Configuration options 
      # This is the global flag to stop the "no Host" regex check
-  enable_schema_validation = false
+  #enable_schema_validation = false
+  # In azapi v2.0+, the argument is exactly this:
+  schema_validation_enabled = false
 }
 
 resource "azurerm_resource_group" "python-linux-functionapp" {
