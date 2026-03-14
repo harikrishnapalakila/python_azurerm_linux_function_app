@@ -195,7 +195,9 @@ variable "ai_foundry_host" {
 resource "azapi_resource" "Assistant-Ai-Agent" {
   # Standard ARM Management Plane type
   #type      = "Microsoft.CognitiveServices/accounts/projects/assistants@2024-05-01-preview"
-  type      = "Microsoft.CognitiveServices/accounts/projects/assistants@2025-10-01-preview"
+  #type      = "Microsoft.CognitiveServices/accounts/projects/assistants@2025-10-01-preview"
+  #type      = "Microsoft.MachineLearningServices/workspaces/assistants@2024-04-01-preview"
+  type      = "Microsoft.MachineLearningServices/workspaces/assistants@2025-12-01"
   name      = "Assistant-Ai-Agent"
   
   # Valid ARM Resource ID (starts with /subscriptions/...)
