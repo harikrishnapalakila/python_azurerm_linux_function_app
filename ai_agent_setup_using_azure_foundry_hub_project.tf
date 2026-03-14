@@ -246,12 +246,13 @@ resource "azapi_resource" "ai_agent" {
   depends_on = [azurerm_ai_foundry_project.project]
   #response_export_values = ["id", "name"]
 
-
+}
 }
 
 output "agent_id" {
     # This will correctly return the server-generated "asst_..." ID
-  value = azapi_data_plane_resource.ai_agent.name # This returns the 'asst_...' ID
+  #value = azapi_data_plane_resource.ai_agent.name # This returns the 'asst_...' ID
+  value = azapi_resource.ai_agent.name # This returns the 'asst_...' ID
 }
 
 ########## Step A: Enable Azure AI Search (Knowledge Base) for RAG ############
