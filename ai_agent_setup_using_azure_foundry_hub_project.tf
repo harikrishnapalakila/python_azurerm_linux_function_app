@@ -189,6 +189,7 @@ variable "ai_foundry_host" {
 }
 
 
+
 ######### Azure Research-AI-Agent ################
 
 resource "azapi_data_plane_resource" "Research-Ai-Agent" {
