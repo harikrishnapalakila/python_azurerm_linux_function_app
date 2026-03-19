@@ -13,6 +13,9 @@ terraform {
   }
 }
 
+
+#aws,gcp, azurerm
+
 # The provider block is where you configure authentication and behavior
 provider "azurerm" {
   # This block is REQUIRED for the Azure provider to function, 
@@ -22,6 +25,14 @@ provider "azurerm" {
   # Optional: Subscription details (can also be set via environment variables)
   # subscription_id = "your-subscription-id"
   # tenant_id       = "your-tenant-id"
+
+ #backend {
+ # resource_group_name = "ams_project_tf_state_admin"
+ # storage_account_name = "saamsprojecttfstateadmin"
+ # container_name       = "amsstatecontainer"
+ # key                 = "amsstatecontainer.tfstate"
+ #}
+
 }
 
 provider "azapi" {
