@@ -48,5 +48,52 @@ print(username + password)
 #reversed[::-1] - slice function
 #for loop
 
+####################### 19/03/2026 ####################
+lambda_error = lambda n: [print(i) for i in range(n)]
+lambda_error(10)
+
+def for_function():
+    print("Using for-loop to Stdout Ten cars.........!!")
+cars=10
+for car in range(cars):
+    print(car)
+for_function()
+for_function()
+for_function()
+
+print("Using Lambda to print ten cars .........!!")
+tencars = lambda cars:[print(car) for car in range(cars)]
+tencars(10)
+
+####################### 19/03/2026 ####################
+
+print("EMI - Payment details ........!!!")
+emis=1000
+for emi in range(emis):
+   print("Number of Emi's paid   : ",emi)
+
+
+
+############ Convert to lambda function ##########
+print("############ Convert to lambda function ##########")
+print()
+print()
+emi_pending = lambda emis : [print("Number of Emi's paid   : ",emi) for emi in range(emis)]
+emi_pending(10)
+
+
+funs = [(lambda x,i=i: x*i ) for i in range(5)]
+print(funs[2](10))
+print(funs[3](10))
+print(funs[4](10))
+print(funs[1](10))
+print(funs[0](10))
+#print(funs[6](10))
+
+emi1,emi2,emi3=input("Enter your emi amount : ").split(" ")
+print(("Thanks for EMI Payment ...!!", emi1,emi2,emi3))
+
+########################## EOD ##########################
+
 
 
