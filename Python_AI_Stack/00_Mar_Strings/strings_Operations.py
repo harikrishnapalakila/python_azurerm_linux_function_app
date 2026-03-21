@@ -162,3 +162,79 @@ print(f"all regions list : {regions}")
 print(f"New Regions list : {unique_regions}")
 
 
+print("############################################")
+
+# 1. The Standard Way (Comma separated)
+print("Azure", "OpenAI", "Terraform", "Log Analytics", "Connected") 
+
+# 2. F-Strings (The Modern & Best Way)
+resource = "Log Analytics"
+status = "Connected"
+print(f"Status check: {resource} is {status.upper()}!")
+
+# 3. Custom Separator (sep)
+# Great for formatting CSV-style strings or paths
+print("logs", "metrics", "traces", "Events", sep=" | ")
+
+# 4. Stay on the Same Line (end)
+# Useful for progress bars or loops
+print("Deploying...", end=" ")
+print("Done!")
+
+# 5. Multiline Strings
+print("""
+Step 1: Setup Terraform
+Step 2: Deploy OpenAI
+Step 3: Transfer Logs
+""")
+
+# 6. Unpacking a List (*)
+tools = ["Terraform", "Python", "KQL"]
+print(*tools, sep=" ---> ")
+
+# 7. Formatting Numbers (Fixed decimals)
+cost = 0.12345
+print(f"Estimated Token Cost: ${cost:.3f}")  #	Chops off extra decimals.
+
+# 8. Printing to a File (Redirecting)
+with open("deploy.log", "w") as f:
+    print("This message goes into the file, not the console.", file=f)  #redirect stdout to log file i.e deploy.log file 
+
+
+user_input_values=int(input("Enter number of item you want in lits: "))
+list_of_item_values_entered_by_user=[]
+
+
+for item in range(user_input_values):
+
+    print(f"Ask - use to enter item values one-by-one...!!!")
+    item = int(input("User entered item value is : "))
+    list_of_item_values_entered_by_user.append(item)
+
+print(f"User Entered final values list is : ",list_of_item_values_entered_by_user)
+
+remove_duplicate_values_from_list=[]
+
+final_list = list(set(list_of_item_values_entered_by_user))
+print(final_list)
+
+with open("final_list.txt","w") as f:
+    print("create file and Redirect stdout to file ${final_list}", file=f)
+
+import sys
+
+# 1. Open the file
+f = open("final_list.txt", "w")
+
+# 2. Redirect stdout to the file object
+sys.stdout = f
+
+# 3. Everything printed now goes to final_list.txt
+print("This is now being written to the file...")
+print("No more console output for now.")
+
+# 4. (Optional) Restore stdout to the console
+sys.stdout = sys.__stdout__ 
+f.close()
+
+print("Back to the console!")
