@@ -123,3 +123,42 @@ print("########################## EOD ##########################")
 
 reuse()
 
+listhari = [1,2,3,4,5,6,7,8,9,10,10000,10000,20000,20000]
+list_update=list(set(listhari))
+print(list_update)
+
+print()
+print()
+resource_group_name = "RG-dev-azureopenai-service"
+azureopenai_endpoint = "https://adaptiveRAGSetup.azureopenai.com"
+print(f" We're working on Duplicate Resource details for azure cloud infra and checking azure billing in Thousand + lacks level for - {resource_group_name}-{azureopenai_endpoint}")
+print()
+print()
+azure_resource_numbers=[1,2,3,4,5,6,6,7,7,7,8,9,10,10,1000,1000,20000,20000,"hari","krishna","hari","krishna"]
+unique_list = []
+#output = lambda if i not in listhari1 unique_list.append(i): [print(i) for i in listhari1]
+for i in azure_resource_numbers:
+    if i not in unique_list:
+        unique_list.append(i)
+print(unique_list)
+
+
+print()
+print()
+
+print("########### Azure cloud Infra checking for azure Resource + Azure OpenAI + Azure Billing Details using python programming ###################")
+
+print()
+print()
+regions = ["centralus","centralus","eastus","eastus","southcentralus","southcentralus","northcentralus","northcentralus"]
+unique_regions = []
+for region in regions:
+    print(f" Need to find unique region for azureopen ai services from {regions}-{unique_regions}")
+    if region not in unique_regions:
+        unique_regions.append(region)
+print()
+print()
+print(f"all regions list : {regions}")
+print(f"New Regions list : {unique_regions}")
+
+
