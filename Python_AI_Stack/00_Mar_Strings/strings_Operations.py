@@ -49,6 +49,10 @@ print(username + password)
 #for loop
 
 ####################### 19/03/2026 ####################
+print("###############  Lambda Function configuration has started over here..........!!!")
+print()
+print()
+
 lambda_error = lambda n: [print(i) for i in range(n)]
 lambda_error(10)
 
@@ -68,7 +72,7 @@ tencars(10)
 ####################### 19/03/2026 ####################
 
 print("EMI - Payment details ........!!!")
-emis=1000
+emis=10
 for emi in range(emis):
    print("Number of Emi's paid   : ",emi)
 
@@ -81,6 +85,7 @@ print()
 emi_pending = lambda emis : [print("Number of Emi's paid   : ",emi) for emi in range(emis)]
 emi_pending(10)
 
+#for(i=0;i<10;i++) {}
 
 funs = [(lambda x,i=i: x*i ) for i in range(5)]
 print(funs[2](10))
@@ -94,6 +99,27 @@ emi1,emi2,emi3=input("Enter your emi amount : ").split(" ")
 print(("Thanks for EMI Payment ...!!", emi1,emi2,emi3))
 
 ########################## EOD ##########################
+#class non-globa():
+
+def reuse():
+    print("############## Reuse below code .........!!")
+    n=20 
+    names=["hari","krishna","kittu"] 
+    salarys=["10000","20000","30000"] 
+    for sid in range(n): 
+        print(f"{sid } |") 
+        for name in names:
+            print(f"{ name }|") 
+            for salary in salarys:
+                print(salary)  
+
+reuse()
 
 
+
+print("########################## EOD ##########################")
+
+
+
+reuse()
 
